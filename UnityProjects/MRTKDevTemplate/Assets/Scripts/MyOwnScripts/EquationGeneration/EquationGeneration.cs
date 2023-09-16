@@ -1,12 +1,17 @@
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 using MathNet.Numerics;
 using MathNet.Numerics.RootFinding;
-using TMPro;
 
 public class EquationGeneration : MonoBehaviour
 {
-    public List<MathBlock> mathBlockList = new List<MathBlock>();
+    public static EquationGeneration instance;
+    private void Awake()
+    {
+        instance = this;
+    }
+
     public GameObject equalBlock;
     public GameObject termBlock;
     public List<GameObject> leftSideBlocks;
@@ -19,6 +24,11 @@ public class EquationGeneration : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        GenerateEquationBlocks();
+    }
+
+    public void GenerateEquationBlocks()
+    {
         InstantiateEqualBlock();
         SetupMathOperators();
 
@@ -27,6 +37,8 @@ public class EquationGeneration : MonoBehaviour
 
         maxTermValue = Random.Range(1, maxTermValue);
         InstantiateRightBlocks(maxTermValue);
+
+        EquationData.GenerateEquationString();
     }
 
     private void InstantiateEqualBlock()
@@ -44,6 +56,11 @@ public class EquationGeneration : MonoBehaviour
         {
             int randomTermValue = Random.Range(-maxTermValue, maxTermValue);
             int randomMathOperatorValue = Random.Range(0, mathOperators.Count);
+            char randomMathOperator = mathOperators[randomMathOperatorValue];
+
+            string termValueToSave = "";
+            string variableToSave = "";
+            string mathOperatorToSave = "";
 
             // Instantiate the block at the current position.
             GameObject newBlock = Instantiate(termBlock, new Vector3(
@@ -53,6 +70,7 @@ public class EquationGeneration : MonoBehaviour
 
             TMP_Text textComponent = newBlock.GetComponentInChildren<TMP_Text>();
 
+            // Goofy ah- code I know, but deal with it
             if (i % 2 == 0)
             {
                 if (randomVariableChance)
@@ -60,29 +78,34 @@ public class EquationGeneration : MonoBehaviour
                     if (randomTermValue != 0)
                     {
                         textComponent.text = randomTermValue.ToString() + 'x';
+                        termValueToSave = randomTermValue.ToString();
+                        variableToSave = "x";
                     } else
                     {
                         textComponent.text = "x";
+                        variableToSave = "x";
                     }
                     randomVariableChance = false;
                 }
                 else
                 {
                     textComponent.text = randomTermValue.ToString();
+                    termValueToSave = randomTermValue.ToString();
                 }
-                mathBlockList.Add(new MathBlock(newBlock, randomTermValue, randomVariableChance ? 'x' : ' ', ' '));
             }
             else
             {
-                char randomMathOperator = mathOperators[randomMathOperatorValue];
                 textComponent.text = randomMathOperator.ToString();
-                mathBlockList.Add(new MathBlock(newBlock, randomTermValue, randomVariableChance ? 'x' : ' ', randomMathOperator));
+                mathOperatorToSave = randomMathOperator.ToString();
             }
 
             if (i == leftSideBlocksAmount - 1 && leftSideBlocksAmount % 2 == 0) // If it reached the end and it's odd, destroy
             {
                 Destroy(newBlock);
+                mathOperatorToSave = "";
             }
+
+            EquationData.leftMathBlockList.Add(new MathBlock(newBlock, termValueToSave, variableToSave, mathOperatorToSave));
 
             xOffset -= 3.5f;
         }
@@ -96,8 +119,13 @@ public class EquationGeneration : MonoBehaviour
 
         for (int i = 0; i < rightSideBlocksAmount; i++)
         {
-            int randomTermValue = Random.Range(1, maxTermValue);
+            int randomTermValue = Random.Range(-maxTermValue, maxTermValue);
             int randomMathOperatorValue = Random.Range(0, mathOperators.Count);
+            char randomMathOperator = mathOperators[randomMathOperatorValue];
+
+            string termValueToSave = "";
+            string variableToSave = "";
+            string mathOperatorToSave = "";
 
             // Instantiate the block at the current position.
             GameObject newBlock = Instantiate(termBlock, new Vector3(
@@ -107,34 +135,47 @@ public class EquationGeneration : MonoBehaviour
 
             TMP_Text textComponent = newBlock.GetComponentInChildren<TMP_Text>();
 
+            // Goofy ah- code I know, but deal with it
             if (i % 2 == 0)
             {
                 if (randomVariableChance)
                 {
-                    textComponent.text = randomTermValue.ToString() + 'x';
+                    if (randomTermValue != 0)
+                    {
+                        textComponent.text = randomTermValue.ToString() + 'x';
+                        termValueToSave = randomTermValue.ToString();
+                        variableToSave = "x";
+                    }
+                    else
+                    {
+                        textComponent.text = "x";
+                        variableToSave = "x";
+                    }
                     randomVariableChance = false;
                 }
                 else
                 {
                     textComponent.text = randomTermValue.ToString();
+                    termValueToSave = randomTermValue.ToString();
                 }
-                mathBlockList.Add(new MathBlock(newBlock, randomTermValue, randomVariableChance ? 'x' : ' ', ' '));
             }
             else
             {
-                char randomMathOperator = mathOperators[randomMathOperatorValue];
                 textComponent.text = randomMathOperator.ToString();
-                mathBlockList.Add(new MathBlock(newBlock, randomTermValue, randomVariableChance ? 'x' : ' ', randomMathOperator));
+                mathOperatorToSave = randomMathOperator.ToString();
             }
 
             if (i == rightSideBlocksAmount - 1 && rightSideBlocksAmount % 2 == 0) // If it reached the end and it's odd, destroy
             {
                 Destroy(newBlock);
+                mathOperatorToSave = "";
             }
+
+            EquationData.rightMathBlockList.Add(new MathBlock(newBlock, termValueToSave, variableToSave, mathOperatorToSave));
 
             xOffset += 3.5f;
         }
-    } 
+    } // Consolidate this into one by just bringing in a pos/neg param
 
     private void SetupMathOperators()
     {
@@ -142,5 +183,20 @@ public class EquationGeneration : MonoBehaviour
         mathOperators.Add('-');
         mathOperators.Add('*');
         mathOperators.Add('/');
+    }
+
+    private void ClearBlocks()
+    {
+        foreach (GameObject block in leftSideBlocks)
+        {
+            Destroy(block);
+        }
+        foreach (GameObject block in rightSideBlocks)
+        {
+            Destroy(block);
+        }
+        Destroy(equalBlock);
+        leftSideBlocks.Clear();
+        rightSideBlocks.Clear();
     }
 }

@@ -3,11 +3,11 @@ using UnityEngine;
 public class MathBlock
 {
     public GameObject blockModel;
-    private float value;
-    private char variable;
-    private char mathOperator;
+    private string value;
+    private string variable;
+    private string mathOperator;
 
-    public MathBlock(GameObject blockModel, float value, char variable, char mathOperator)
+    public MathBlock(GameObject blockModel, string value, string variable, string mathOperator)
     {
         this.blockModel = blockModel;
         this.value = value;
@@ -21,19 +21,19 @@ public class MathBlock
         set { this.blockModel = blockModel; }
     }
 
-    public float Value
+    public string Value
     {
         get { return value; }
         set { this.value = value; }
     }
 
-    public char Variable
+    public string Variable
     {
         get { return variable; }
         set { variable = value; }
     }
 
-    public char Operator
+    public string Operator
     {
         get { return mathOperator; }
         set { mathOperator = value; }
