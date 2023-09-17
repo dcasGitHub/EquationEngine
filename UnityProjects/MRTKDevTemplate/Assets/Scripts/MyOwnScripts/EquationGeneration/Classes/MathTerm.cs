@@ -1,6 +1,7 @@
+using MixedReality.Toolkit.UX;
 using UnityEngine;
 
-public class MathBlock
+public class MathBlock : MonoBehaviour
 {
     public GameObject blockModel;
     private string value;
@@ -37,5 +38,16 @@ public class MathBlock
     {
         get { return mathOperator; }
         set { mathOperator = value; }
+    }
+
+    private void OnEnable()
+    {
+        PressableButton pressableButton = transform.GetChild(0).GetComponent<PressableButton>();
+        pressableButton.OnClicked.AddListener(OnTouched);
+    }
+
+    public void OnTouched()
+    {
+        Debug.Log(value + " " + variable + " " + mathOperator);
     }
 }

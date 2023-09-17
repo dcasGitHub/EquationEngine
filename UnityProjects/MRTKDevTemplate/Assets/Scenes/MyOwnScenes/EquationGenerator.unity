@@ -257,12 +257,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   equalBlock: {fileID: 4506931332641614634, guid: 5ce65181c2dc2be43bc77fde71df639f, type: 3}
   termBlock: {fileID: 4506931332641614634, guid: 103f72b7cca113f4093b1a7557d74689, type: 3}
-  leftSideBlocks: []
-  rightSideBlocks: []
   equationOriginPoint: {fileID: 64706506}
   maxValueSide: 4
   maxTermValue: 9
-  mathOperators: 
 --- !u!1 &1295090986
 GameObject:
   m_ObjectHideFlags: 0

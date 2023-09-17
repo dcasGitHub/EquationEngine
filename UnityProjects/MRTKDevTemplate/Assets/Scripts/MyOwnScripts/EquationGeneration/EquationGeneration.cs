@@ -27,6 +27,11 @@ public class EquationGeneration : MonoBehaviour
 
     public void GenerateEquationBlocks()
     {
+        if (leftSideBlocks != null && rightSideBlocks != null)
+        {
+            ClearBlocks();
+        }
+
         InstantiateEqualBlock();
         SetupMathOperators();
 
@@ -78,6 +83,7 @@ public class EquationGeneration : MonoBehaviour
                         textComponent.text = randomTermValue.ToString() + 'x';
                         termValueToSave = randomTermValue.ToString();
                         variableToSave = "*x";
+
                     }
                     else
                     {
@@ -105,6 +111,12 @@ public class EquationGeneration : MonoBehaviour
             }
 
             EquationData.leftMathBlockList.Add(new MathBlock(newBlock, termValueToSave, variableToSave, mathOperatorToSave));
+
+            MathBlock mathBlock = newBlock.AddComponent<MathBlock>();
+            mathBlock.BlockModel = newBlock;
+            mathBlock.Value = termValueToSave;
+            mathBlock.Variable = variableToSave;
+            mathBlock.Operator = mathOperatorToSave;
 
             xOffset -= 3.5f;
         }
@@ -171,6 +183,11 @@ public class EquationGeneration : MonoBehaviour
             }
 
             EquationData.rightMathBlockList.Add(new MathBlock(newBlock, termValueToSave, variableToSave, mathOperatorToSave));
+
+            MathBlock mathBlock = newBlock.AddComponent<MathBlock>();
+            mathBlock.Value = termValueToSave;
+            mathBlock.Variable = variableToSave;
+            mathBlock.Operator = mathOperatorToSave;
 
             xOffset += 3.5f;
         }
