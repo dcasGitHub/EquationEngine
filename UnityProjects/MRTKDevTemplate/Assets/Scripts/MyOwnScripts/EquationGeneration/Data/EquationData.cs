@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using AngouriMath.Extensions;
-using UnityEngine.Windows;
-using System.Buffers;
 
 public static class EquationData 
 {
@@ -26,6 +24,8 @@ public static class EquationData
 
     public static string GenerateEquationString()
     {
+        equationString = "";
+
         List<MathBlock> reverseLeftMathBlockList = new List<MathBlock>(leftMathBlockList);
         reverseLeftMathBlockList.Reverse();
 
