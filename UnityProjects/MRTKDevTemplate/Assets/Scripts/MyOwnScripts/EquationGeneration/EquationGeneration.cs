@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using MathNet.Numerics;
-using MathNet.Numerics.RootFinding;
 
 public class EquationGeneration : MonoBehaviour
 {
@@ -14,12 +12,12 @@ public class EquationGeneration : MonoBehaviour
 
     public GameObject equalBlock;
     public GameObject termBlock;
-    public List<GameObject> leftSideBlocks;
-    public List<GameObject> rightSideBlocks;
+    private List<GameObject> leftSideBlocks;
+    private List<GameObject> rightSideBlocks;
     public Transform equationOriginPoint;
     public int maxValueSide = 4;
     public int maxTermValue = 9;
-    public List<char> mathOperators = new List<char>();
+    private List<char> mathOperators = new List<char>();
 
     // Start is called before the first frame update
     void Start()
@@ -38,7 +36,7 @@ public class EquationGeneration : MonoBehaviour
         maxTermValue = Random.Range(1, maxTermValue);
         InstantiateRightBlocks(maxTermValue);
 
-        EquationData.GenerateEquationString();
+        EquationData.CheckAnswer();
     }
 
     private void InstantiateEqualBlock()
@@ -50,7 +48,7 @@ public class EquationGeneration : MonoBehaviour
     {
         int leftSideBlocksAmount = Random.Range(1, maxValueSide);
         bool randomVariableChance = Random.Range(0, 2) == 1;
-        float xOffset = -3.5f; // Start at offset for the first block
+        float xOffset = -3.5f;
 
         for (int i = 0; i < leftSideBlocksAmount; i++)
         {
@@ -79,8 +77,9 @@ public class EquationGeneration : MonoBehaviour
                     {
                         textComponent.text = randomTermValue.ToString() + 'x';
                         termValueToSave = randomTermValue.ToString();
-                        variableToSave = "x";
-                    } else
+                        variableToSave = "*x";
+                    }
+                    else
                     {
                         textComponent.text = "x";
                         variableToSave = "x";
@@ -102,14 +101,14 @@ public class EquationGeneration : MonoBehaviour
             if (i == leftSideBlocksAmount - 1 && leftSideBlocksAmount % 2 == 0) // If it reached the end and it's odd, destroy
             {
                 Destroy(newBlock);
-                mathOperatorToSave = "";
+                mathOperatorToSave = " ";
             }
 
             EquationData.leftMathBlockList.Add(new MathBlock(newBlock, termValueToSave, variableToSave, mathOperatorToSave));
 
             xOffset -= 3.5f;
         }
-    } // Consolidate this into one by just bringing in a pos/neg param
+    }
 
     private void InstantiateRightBlocks(int maxTermValue)
     {
@@ -144,7 +143,7 @@ public class EquationGeneration : MonoBehaviour
                     {
                         textComponent.text = randomTermValue.ToString() + 'x';
                         termValueToSave = randomTermValue.ToString();
-                        variableToSave = "x";
+                        variableToSave = "*x";
                     }
                     else
                     {
@@ -175,7 +174,7 @@ public class EquationGeneration : MonoBehaviour
 
             xOffset += 3.5f;
         }
-    } // Consolidate this into one by just bringing in a pos/neg param
+    }
 
     private void SetupMathOperators()
     {

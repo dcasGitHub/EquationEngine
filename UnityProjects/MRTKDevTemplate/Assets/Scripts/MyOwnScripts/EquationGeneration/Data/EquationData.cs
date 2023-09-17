@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
 using UnityEngine;
+using AngouriMath.Extensions;
 
 public static class EquationData 
 {
@@ -10,7 +9,7 @@ public static class EquationData
     public static List<MathBlock> rightMathBlockList = new List<MathBlock>();
     public static string equationString;
 
-    public static void GenerateEquationString()
+    public static string GenerateEquationString()
     {
         List<MathBlock> reverseLeftMathBlockList = new List<MathBlock>(leftMathBlockList);
         reverseLeftMathBlockList.Reverse();
@@ -29,9 +28,16 @@ public static class EquationData
 
         if (!equationString.Contains('x'))
         {
-            EquationGeneration.instance.GenerateEquationBlocks();
+            Debug.Log("Reset!");
+            // EquationGeneration.instance.GenerateEquationBlocks();
         }
 
         Debug.Log(equationString);
+        return equationString;
+    }
+
+    public static void CheckAnswer()
+    {
+        Debug.Log(GenerateEquationString().Solve("x").Simplify());
     }
 }
