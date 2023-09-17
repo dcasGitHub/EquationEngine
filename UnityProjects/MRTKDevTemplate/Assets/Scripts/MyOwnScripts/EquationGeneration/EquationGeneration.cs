@@ -51,7 +51,7 @@ public class EquationGeneration : MonoBehaviour
 
     private void InstantiateLeftBlocks(int maxTermValue)
     {
-        int leftSideBlocksAmount = Random.Range(1, maxValueSide);
+        int leftSideBlocksAmount = /*Random.Range(1, */maxValueSide/*)*/;
         bool randomVariableChance = Random.Range(0, 2) == 1;
         float xOffset = -3.5f;
 
@@ -110,13 +110,14 @@ public class EquationGeneration : MonoBehaviour
                 mathOperatorToSave = " ";
             }
 
-            EquationData.leftMathBlockList.Add(new MathBlock(newBlock, termValueToSave, variableToSave, mathOperatorToSave));
+            EquationData.leftMathBlockList.Add(new MathBlock(newBlock, termValueToSave, variableToSave, mathOperatorToSave, true));
 
             MathBlock mathBlock = newBlock.AddComponent<MathBlock>();
             mathBlock.BlockModel = newBlock;
             mathBlock.Value = termValueToSave;
             mathBlock.Variable = variableToSave;
             mathBlock.Operator = mathOperatorToSave;
+            mathBlock.LeftRightSide = true;
 
             xOffset -= 3.5f;
         }
@@ -182,12 +183,13 @@ public class EquationGeneration : MonoBehaviour
                 mathOperatorToSave = "";
             }
 
-            EquationData.rightMathBlockList.Add(new MathBlock(newBlock, termValueToSave, variableToSave, mathOperatorToSave));
+            EquationData.rightMathBlockList.Add(new MathBlock(newBlock, termValueToSave, variableToSave, mathOperatorToSave, false));
 
             MathBlock mathBlock = newBlock.AddComponent<MathBlock>();
             mathBlock.Value = termValueToSave;
             mathBlock.Variable = variableToSave;
             mathBlock.Operator = mathOperatorToSave;
+            mathBlock.LeftRightSide = false;
 
             xOffset += 3.5f;
         }

@@ -7,13 +7,15 @@ public class MathBlock : MonoBehaviour
     private string value;
     private string variable;
     private string mathOperator;
+    private bool leftRightSide;
 
-    public MathBlock(GameObject blockModel, string value, string variable, string mathOperator)
+    public MathBlock(GameObject blockModel, string value, string variable, string mathOperator, bool leftRightSide)
     {
         this.blockModel = blockModel;
         this.value = value;
         this.variable = variable;
         this.mathOperator = mathOperator;
+        this.leftRightSide = leftRightSide;
     }
 
     public GameObject BlockModel
@@ -40,6 +42,12 @@ public class MathBlock : MonoBehaviour
         set { mathOperator = value; }
     }
 
+    public bool LeftRightSide
+    {
+        get { return leftRightSide; }
+        set { leftRightSide = value; }
+    }
+
     private void OnEnable()
     {
         PressableButton pressableButton = transform.GetChild(0).GetComponent<PressableButton>();
@@ -49,5 +57,7 @@ public class MathBlock : MonoBehaviour
     public void OnTouched()
     {
         Debug.Log(value + " " + variable + " " + mathOperator);
+        EquationData.mathBlocksSelected.Add(new MathBlock(BlockModel, Value, Variable, Operator, LeftRightSide));
+        ToolMenu.choiceCount++;
     }
 }
